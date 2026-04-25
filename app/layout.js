@@ -2,8 +2,8 @@ import "./globals.css";
 import Navbar from "./components/Navbar";
 
 export const metadata = {
-  title: "Bink City",
-  description: "Automated transactions powered by Bink City",
+  title: "BinkCity",
+  description: "Real Money. Real Players. Real Action. Join The Game.",
 };
 
 export default function RootLayout({ children }) {
