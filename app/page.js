@@ -77,7 +77,7 @@ export default function HomePage() {
           }}>
             Get Started
           </Link>
-          <Link href="/payment" style={{
+          <Link href="/order" style={{
             backgroundColor: "transparent",
             color: "#ffffff",
             fontFamily: "Inter, sans-serif",
@@ -89,7 +89,7 @@ export default function HomePage() {
             border: "1px solid #1f1f1f",
             letterSpacing: "0.03em",
           }}>
-            Make a Payment
+            Buy Tokens
           </Link>
         </div>
       </section>
@@ -105,18 +105,18 @@ export default function HomePage() {
       }}>
         {[
           {
-            title: "Instant Transfers",
-            desc: "Send and receive funds in seconds with our automated engine.",
+            title: "Instant Delivery",
+            desc: "Tokens delivered to your ClubGG account automatically within minutes.",
             icon: "⚡",
           },
           {
-            title: "Secure Accounts",
-            desc: "Your data and funds are protected with industry-grade security.",
+            title: "Pay Only on Success",
+            desc: "Your card is only charged after tokens are verified and delivered.",
             icon: "🔒",
           },
           {
-            title: "Easy Payments",
-            desc: "Manage, schedule, and track all payments from one dashboard.",
+            title: "Track Everything",
+            desc: "Monitor every order from purchase to delivery on your dashboard.",
             icon: "💳",
           },
         ].map(({ title, desc, icon }) => (

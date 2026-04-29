@@ -1,39 +1,66 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
-function LoginForm() {
+export default function SignupPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const registered = searchParams.get("registered");
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    dateOfBirth: "",
+  });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  function handleChange(e) {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
-    setLoading(true);
 
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
-
-    if (result?.error) {
-      setError("Invalid email or password");
-      setLoading(false);
+    if (form.password !== form.confirmPassword) {
+      setError("Passwords do not match");
       return;
     }
 
-    router.push("/dashboard");
-    router.refresh();
+    if (form.password.length < 8) {
+      setError("Password must be at least 8 characters");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          password: form.password,
+          dateOfBirth: form.dateOfBirth,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Something went wrong");
+        setLoading(false);
+        return;
+      }
+
+      router.push("/login?registered=true");
+    } catch {
+      setError("Network error. Please try again.");
+      setLoading(false);
+    }
   }
 
   const inputStyle = {
@@ -83,7 +110,7 @@ function LoginForm() {
               marginBottom: "12px",
             }}
           >
-            Member Portal
+            Create Account
           </p>
           <h1
             style={{
@@ -94,7 +121,7 @@ function LoginForm() {
               marginBottom: "8px",
             }}
           >
-            Sign In
+            Sign Up
           </h1>
           <p
             style={{
@@ -103,7 +130,7 @@ function LoginForm() {
               color: "#b5b5b5",
             }}
           >
-            Access your Bink City account
+            Join Bink City to get started
           </p>
         </div>
 
@@ -130,23 +157,6 @@ function LoginForm() {
             }}
           />
 
-          {registered && (
-            <div
-              style={{
-                backgroundColor: "rgba(34, 197, 94, 0.15)",
-                border: "1px solid #22c55e",
-                borderRadius: "8px",
-                padding: "12px 16px",
-                marginBottom: "20px",
-                fontFamily: "Inter, sans-serif",
-                fontSize: "13px",
-                color: "#4ade80",
-              }}
-            >
-              Account created! Sign in to continue.
-            </div>
-          )}
-
           {error && (
             <div
               style={{
@@ -165,24 +175,64 @@ function LoginForm() {
           )}
 
           <div style={{ marginBottom: "20px" }}>
+            <label style={labelStyle}>Full Name</label>
+            <input
+              type="text"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              placeholder="John Doe"
+              required
+              style={inputStyle}
+            />
+          </div>
+
+          <div style={{ marginBottom: "20px" }}>
             <label style={labelStyle}>Email</label>
             <input
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              name="email"
+              value={form.email}
+              onChange={handleChange}
               placeholder="you@example.com"
               required
               style={inputStyle}
             />
           </div>
 
-          <div style={{ marginBottom: "28px" }}>
+          <div style={{ marginBottom: "20px" }}>
+            <label style={labelStyle}>Date of Birth</label>
+            <input
+              type="date"
+              name="dateOfBirth"
+              value={form.dateOfBirth}
+              onChange={handleChange}
+              required
+              style={inputStyle}
+            />
+          </div>
+
+          <div style={{ marginBottom: "20px" }}>
             <label style={labelStyle}>Password</label>
             <input
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Your password"
+              name="password"
+              value={form.password}
+              onChange={handleChange}
+              placeholder="Min 8 characters"
+              required
+              style={inputStyle}
+            />
+          </div>
+
+          <div style={{ marginBottom: "28px" }}>
+            <label style={labelStyle}>Confirm Password</label>
+            <input
+              type="password"
+              name="confirmPassword"
+              value={form.confirmPassword}
+              onChange={handleChange}
+              placeholder="Repeat your password"
               required
               style={inputStyle}
             />
@@ -206,7 +256,7 @@ function LoginForm() {
               opacity: loading ? 0.7 : 1,
             }}
           >
-            {loading ? "SIGNING IN..." : "SIGN IN"}
+            {loading ? "CREATING ACCOUNT..." : "CREATE ACCOUNT"}
           </button>
 
           <p
@@ -218,44 +268,16 @@ function LoginForm() {
               marginTop: "20px",
             }}
           >
-            Don&apos;t have an account?{" "}
+            Already have an account?{" "}
             <Link
-              href="/signup"
+              href="/login"
               style={{ color: "#c41230", textDecoration: "none" }}
             >
-              Create one
+              Sign In
             </Link>
           </p>
         </form>
       </div>
     </div>
-  );
-}
-
-function LoginFallback() {
-  return (
-    <div
-      style={{
-        paddingTop: "64px",
-        minHeight: "100vh",
-        backgroundColor: "#000000",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "100px 24px",
-        fontFamily: "Inter, sans-serif",
-        color: "#b5b5b5",
-      }}
-    >
-      Loading...
-    </div>
-  );
-}
-
-export default function LoginPage() {
-  return (
-    <Suspense fallback={<LoginFallback />}>
-      <LoginForm />
-    </Suspense>
   );
 }

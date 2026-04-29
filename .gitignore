@@ -36,3 +36,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Prisma (generated into node_modules/.prisma)
+/app/generated
+
+# worker
+worker/screenshots/*.png
+__pycache__/
+*.pyc
