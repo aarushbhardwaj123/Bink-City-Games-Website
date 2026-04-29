@@ -3,16 +3,24 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
 
 export default function Navbar() {
   const pathname = usePathname();
-  const [menuOpen, setMenuOpen] = useState(false);
+  const { data: session } = useSession();
 
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/payment", label: "Payments" },
     { href: "/faq", label: "FAQ" },
   ];
+
+  const authLinks = [
+    { href: "/dashboard", label: "Dashboard" },
+    { href: "/order", label: "Buy Tokens" },
+  ];
+
+  const links = session ? [...publicLinks, ...authLinks] : publicLinks;
 
   return (
     <nav style={{

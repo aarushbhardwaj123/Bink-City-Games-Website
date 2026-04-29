@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                String   @id @default(cuid())
+  email             String   @unique
+  passwordHash      String
+  name              String
+  dateOfBirth       DateTime
+  onfidoApplicantId String?
+  onfidoCheckId     String?
+  idVerified        Boolean  @default(false)
+  isAdmin           Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  orders            Order[]
+}
+
+model Order {
+  id                    String      @id @default(cuid())
+  userId                String
+  user                  User        @relation(fields: [userId], references: [id])
+  clubGgClubId          String
+  clubGgPlayerId        String
+  tokenAmount           Int
+  priceUsd              Int // stored in cents
+  stripePaymentIntentId String      @unique
+  status                OrderStatus @default(PENDING)
+  failureReason         String?
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+}
+
+enum OrderStatus {
+  PENDING
+  AUTHORIZED
+  PROCESSING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
