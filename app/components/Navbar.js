@@ -15,13 +15,6 @@ export default function Navbar() {
     { href: "/faq", label: "FAQ" },
   ];
 
-  const authLinks = [
-    { href: "/dashboard", label: "Dashboard" },
-    { href: "/order", label: "Buy Tokens" },
-  ];
-
-  const links = session ? [...publicLinks, ...authLinks] : publicLinks;
-
   return (
     <nav style={{
       position: "fixed",
@@ -75,35 +68,47 @@ export default function Navbar() {
           ))}
         </div>
 
-        {/* Right: Login + Register */}
-        <div style={{ display: "flex", gap: "10px", flexShrink: 0 }}>
-          <Link href="/login" style={{
-            backgroundColor: "transparent",
-            color: "#ffffff",
-            fontFamily: "Inter, sans-serif",
-            fontSize: "13px",
-            fontWeight: 600,
-            padding: "8px 18px",
-            borderRadius: "6px",
-            textDecoration: "none",
-            border: "1px solid #333333",
-            letterSpacing: "0.02em",
-          }}>
-            Login
-          </Link>
-          <Link href="/signup" style={{
-            backgroundColor: "#c41230",
-            color: "#ffffff",
-            fontFamily: "Inter, sans-serif",
-            fontSize: "13px",
-            fontWeight: 600,
-            padding: "8px 18px",
-            borderRadius: "6px",
-            textDecoration: "none",
-            letterSpacing: "0.02em",
-          }}>
-            Register
-          </Link>
+        {/* Right: auth buttons */}
+        <div style={{ display: "flex", gap: "10px", flexShrink: 0, alignItems: "center" }}>
+          {session ? (
+            <>
+              <Link href="/dashboard" style={{
+                backgroundColor: "transparent", color: "#ffffff",
+                fontFamily: "Inter, sans-serif", fontSize: "13px", fontWeight: 600,
+                padding: "8px 18px", borderRadius: "6px", textDecoration: "none",
+                border: "1px solid #333333", letterSpacing: "0.02em",
+              }}>
+                Dashboard
+              </Link>
+              <button onClick={() => signOut({ callbackUrl: "/" })} style={{
+                backgroundColor: "#c41230", color: "#ffffff",
+                fontFamily: "Inter, sans-serif", fontSize: "13px", fontWeight: 600,
+                padding: "8px 18px", borderRadius: "6px", border: "none",
+                cursor: "pointer", letterSpacing: "0.02em",
+              }}>
+                Sign Out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/login" style={{
+                backgroundColor: "transparent", color: "#ffffff",
+                fontFamily: "Inter, sans-serif", fontSize: "13px", fontWeight: 600,
+                padding: "8px 18px", borderRadius: "6px", textDecoration: "none",
+                border: "1px solid #333333", letterSpacing: "0.02em",
+              }}>
+                Login
+              </Link>
+              <Link href="/signup" style={{
+                backgroundColor: "#c41230", color: "#ffffff",
+                fontFamily: "Inter, sans-serif", fontSize: "13px", fontWeight: 600,
+                padding: "8px 18px", borderRadius: "6px", textDecoration: "none",
+                letterSpacing: "0.02em",
+              }}>
+                Register
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </nav>
